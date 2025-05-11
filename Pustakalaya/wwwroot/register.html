@@ -1,0 +1,562 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PustalaJaya - Register</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Your existing CSS styles remain unchanged */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .register-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+
+        .register-header {
+            background-color: #1e2a38;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+            .register-header h2 {
+                font-size: 24px;
+                font-weight: 600;
+                margin: 10px 0;
+            }
+
+            .register-header p {
+                font-size: 14px;
+                opacity: 0.8;
+            }
+
+            .register-header .logo {
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+
+                .register-header .logo span {
+                    color: #ff8c00;
+                }
+
+        .register-body {
+            padding: 30px;
+        }
+
+        .user-type-selector {
+            display: flex;
+            margin-bottom: 25px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        .user-type-option {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 1px solid #ddd;
+            color: #555;
+            font-weight: 500;
+        }
+
+            .user-type-option:last-child {
+                border-right: none;
+            }
+
+            .user-type-option.active {
+                background-color: #ff8c00;
+                color: white;
+            }
+
+            .user-type-option i {
+                margin-right: 8px;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+        }
+
+            .input-row .form-group {
+                flex: 1;
+            }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                border-color: #ff8c00;
+                outline: none;
+            }
+
+        .form-group .input-with-icon {
+            position: relative;
+        }
+
+            .form-group .input-with-icon input {
+                padding-left: 40px;
+                padding-right: 40px;
+            }
+
+            .form-group .input-with-icon i {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #aaa;
+            }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .password-toggle:focus {
+                outline: none;
+            }
+
+        .password-requirements {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+            .password-requirements ul {
+                padding-left: 20px;
+                margin-top: 5px;
+            }
+
+            .password-requirements li {
+                margin-bottom: 3px;
+            }
+
+        .form-check {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+            .form-check input {
+                margin-top: 4px;
+                margin-right: 10px;
+            }
+
+            .form-check label {
+                font-size: 14px;
+                color: #555;
+            }
+
+            .form-check a {
+                color: #ff8c00;
+                text-decoration: none;
+            }
+
+                .form-check a:hover {
+                    text-decoration: underline;
+                }
+
+        .extra-fields {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-register {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #ff8c00;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 3px 10px rgba(255, 140, 0, 0.2);
+            margin-bottom: 10px;
+        }
+
+            .btn-register:hover {
+                background-color: #e67e00;
+            }
+
+        .register-footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+            .register-footer p {
+                margin: 0;
+                font-size: 14px;
+                color: #555;
+            }
+
+            .register-footer a {
+                color: #ff8c00;
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+                .register-footer a:hover {
+                    text-decoration: underline;
+                }
+
+        .invalid-feedback {
+            display: none;
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        input.is-invalid {
+            border-color: #dc3545;
+        }
+
+            input.is-invalid + .invalid-feedback {
+                display: block;
+            }
+
+        .home-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #1e2a38;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+            .home-link i {
+                margin-right: 8px;
+            }
+
+            .home-link:hover {
+                color: #ff8c00;
+            }
+
+        .api-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Home link -->
+    <a href="index.html" class="home-link">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="register-container">
+        <div class="register-header">
+            <div class="logo">Pustaka<span>Laya</span></div>
+            <h2>Create an Account</h2>
+            <p>Join our book-loving community</p>
+        </div>
+
+        <div class="register-body">
+            <!-- User Type Selector -->
+            <div class="user-type-selector">
+                <div class="user-type-option active" data-type="member" data-role="0">
+                    <i class="fas fa-user"></i> Member
+                </div>
+                <div class="user-type-option" data-type="staff" data-role="1">
+                    <i class="fas fa-user-tie"></i> Staff
+                </div>
+                <div class="user-type-option" data-type="admin" data-role="2">
+                    <i class="fas fa-user-shield"></i> Admin
+                </div>
+            </div>
+
+            <div id="apiError" class="api-error"></div>
+
+            <form id="registerForm">
+                <!-- Hidden field for user type -->
+                <input type="hidden" id="role" name="role" value="0">
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="invalid-feedback">Please enter a valid username (minimum 4 characters)</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="invalid-feedback">Please enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                    <div class="invalid-feedback">Please enter your full name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">Password must meet the requirements below</div>
+                    <div class="password-requirements">
+                        <p>Password must contain:</p>
+                        <ul>
+                            <li>At least 6 characters</li>
+                            <li>Letters and numbers recommended</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" id="termsAgreement" name="termsAgreement" required>
+                    <label for="termsAgreement">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-register" id="registerButton">Create Account</button>
+            </form>
+        </div>
+
+        <div class="register-footer">
+            <p>Already have an account? <a href="login.html">Login</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // User type selector
+            const userTypeOptions = document.querySelectorAll('.user-type-option');
+            const roleInput = document.getElementById('role');
+
+            userTypeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    userTypeOptions.forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+
+                    // Add active class to clicked option
+                    this.classList.add('active');
+
+                    // Update hidden field with role value (0, 1, or 2)
+                    const role = this.getAttribute('data-role');
+                    roleInput.value = role;
+                });
+            });
+
+            // Password toggle
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                const passwordField = document.getElementById('password');
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+
+                // Toggle icon
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+
+            // Form validation and API submission
+            const form = document.getElementById('registerForm');
+            const apiErrorContainer = document.getElementById('apiError');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Reset previous error messages
+                apiErrorContainer.style.display = 'none';
+                apiErrorContainer.textContent = '';
+                form.querySelectorAll('input').forEach(input => {
+                    input.classList.remove('is-invalid');
+                });
+
+                // Client-side validation
+                let isValid = true;
+
+                // Validate username (min 4 characters)
+                const username = document.getElementById('username');
+                if (!username.value.trim() || username.value.length < 4) {
+                    username.classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                // Validate email
+                const email = document.getElementById('email');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    email.classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                // Validate full name
+                const fullName = document.getElementById('fullName');
+                if (!fullName.value.trim()) {
+                    fullName.classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                // Validate password (min 6 characters)
+                const password = document.getElementById('password');
+                if (!password.value || password.value.length < 6) {
+                    password.classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                // Validate terms agreement
+                const termsAgreement = document.getElementById('termsAgreement');
+                if (!termsAgreement.checked) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    return;
+                }
+
+                // Prepare data for API
+                const registerData = {
+                    username: username.value,
+                    email: email.value,
+                    password: password.value,
+                    fullName: fullName.value,
+                    role: parseInt(roleInput.value)
+                };
+
+                // Show loading state
+                const registerButton = document.getElementById('registerButton');
+                registerButton.disabled = true;
+                registerButton.textContent = 'Creating Account...';
+
+                try {
+                    // Call register API
+                    const response = await fetch('/api/Auth/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(registerData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Registration successful
+                        // Store token (optional, since they should login after registration)
+                        localStorage.setItem('registrationComplete', 'true');
+
+                        // Redirect to login page
+                        window.location.href = 'login.html?registered=true';
+                    } else {
+                        // Show API error
+                        apiErrorContainer.textContent = data.message || 'Registration failed. Please try again.';
+                        apiErrorContainer.style.display = 'block';
+
+                        // Reset button
+                        registerButton.disabled = false;
+                        registerButton.textContent = 'Create Account';
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    apiErrorContainer.textContent = 'An error occurred during registration. Please try again later.';
+                    apiErrorContainer.style.display = 'block';
+
+                    // Reset button
+                    registerButton.disabled = false;
+                    registerButton.textContent = 'Create Account';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
