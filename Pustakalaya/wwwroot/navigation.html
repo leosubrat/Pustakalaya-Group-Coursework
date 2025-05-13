@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PustalaLaya - Book Library</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background-color: #1e2a38;
+            color: #ffffff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-container {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .logo-container .logo-text {
+                font-size: 22px;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+
+                .logo-container .logo-text span {
+                    color: #ff8c00;
+                }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #c5c5c5;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+            .nav-item:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #ffffff;
+            }
+
+            .nav-item.active {
+                background-color: rgba(255, 255, 255, 0.15);
+                color: #ffffff;
+                border-left: 3px solid #ff8c00;
+            }
+
+            .nav-item i {
+                margin-right: 12px;
+                width: 20px;
+                text-align: center;
+            }
+
+        .nav-main {
+            flex: 1;
+        }
+
+        .nav-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+
+        .logout-button {
+            color: #ff8c00;
+        }
+
+            .logout-button:hover {
+                background-color: rgba(255, 140, 0, 0.1);
+            }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-container">
+            <i class="fa fa-book fa-lg"></i>
+            <div class="logo-text">Pustaka<span>Laya</span></div>
+        </div>
+        <div class="nav-main">
+            <a href="user-dashboard.html" class="nav-item" id="nav-home">
+                <i class="fa fa-home"></i>
+                Home
+            </a>
+            <a href="bestseller.html" class="nav-item" id="nav-bestsellers">
+                <i class="fa fa-star"></i>
+                Bestsellers
+            </a>
+            <a href="awardwinners.html" class="nav-item" id="nav-awardwinners">
+                <i class="fa fa-trophy"></i>
+                Award Winners
+            </a>
+            <a href="newarrivals.html" class="nav-item" id="nav-newarrivals">
+                <i class="fa fa-truck"></i>
+                New Arrivals
+            </a>
+            <a href="comingsoon.html" class="nav-item" id="nav-comingsoon">
+                <i class="fa fa-calendar"></i>
+                Coming Soon
+            </a>
+            <a href="deals.html" class="nav-item" id="nav-deals">
+                <i class="fa fa-tag"></i>
+                Deals
+            </a>
+        </div>
+        <div class="nav-bottom">
+            <a href="login.html" class="nav-item logout-button">
+                <i class="fa fa-sign-out-alt"></i>
+                Log Out
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // This script sets the active navigation item based on the current page URL
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the current page filename
+            const currentPage = window.location.pathname.split('/').pop();
+
+            // Remove 'active' class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Map page filenames to navigation IDs
+            const pageToNavMap = {
+                'user-dashboard.html': 'nav-home',
+                'index.html': 'nav-home',
+                '': 'nav-home',
+                'bestseller.html': 'nav-bestsellers',
+                'awardwinners.html': 'nav-awardwinners',
+                'newarrivals.html': 'nav-newarrivals',
+                'comingsoon.html': 'nav-comingsoon',
+                'deals.html': 'nav-deals'
+            };
+
+            // Set active class on the current page's nav item
+            const navId = pageToNavMap[currentPage];
+            if (navId) {
+                document.getElementById(navId).classList.add('active');
+            } else {
+                // Default to home if no match found
+                document.getElementById('nav-home').classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

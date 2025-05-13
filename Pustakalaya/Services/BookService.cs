@@ -295,5 +295,22 @@ namespace Pustakalaya.Services
                 ImageUrl = book.ImageUrl
             };
         }
+
+        public async Task<IEnumerable<BookDto>> GetDiscountedBooksAsync()
+        {
+            var now = DateTime.UtcNow;
+
+            var books = await _context.Books
+                .Where(b =>
+                    b.DiscountPercentage > 0 &&
+                    b.DiscountStartDate.HasValue &&
+                    b.DiscountEndDate.HasValue &&
+                    b.DiscountStartDate.Value <= now &&
+                    b.DiscountEndDate.Value >= now)
+                .ToListAsync();
+
+            return books.Select(MapToDto);
+        }
+
     }
 }

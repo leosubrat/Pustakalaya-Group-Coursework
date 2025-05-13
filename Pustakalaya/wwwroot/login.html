@@ -211,10 +211,6 @@
     </style>
 </head>
 <body>
-    <!-- Back to Home link -->
-    <a href="index.html" class="home-link">
-        <i class="fas fa-arrow-left"></i> Back to Home
-    </a>
 
     <div class="login-container">
         <div class="login-header">
@@ -259,119 +255,85 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // User type tabs functionality
+        document.addEventListener('DOMContentLoaded', function () {
             const tabs = document.querySelectorAll('.user-type-tabs button');
             const loginForm = document.getElementById('login-form');
             const emailField = document.getElementById('email');
             const passwordField = document.getElementById('password');
             const errorMessage = document.getElementById('error-message');
-
-            // Variable to store the selected role (default to Member - 0)
             let selectedRole = 0;
 
             tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
+                tab.addEventListener('click', function () {
                     tabs.forEach(t => t.classList.remove('active'));
-
-                    // Add active class to clicked tab
                     this.classList.add('active');
-
-                    // Update selected role
                     selectedRole = parseInt(this.getAttribute('data-role'));
-
-                    // Update field placeholder based on user type
                     const userType = this.getAttribute('data-type');
-
-                    if (userType === 'member') {
-                        emailField.placeholder = 'Enter your email or username';
-                    } else if (userType === 'staff') {
-                        emailField.placeholder = 'Enter your staff ID or email';
-                    } else if (userType === 'admin') {
-                        emailField.placeholder = 'Enter your admin ID or email';
-                    }
+                    emailField.placeholder =
+                        userType === 'member' ? 'Enter your email or username' :
+                            userType === 'staff' ? 'Enter your staff ID or email' :
+                                'Enter your admin ID or email';
                 });
             });
 
-            // Form submission - API call
-            loginForm.addEventListener('submit', async function(e) {
+            loginForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
-
-                // Clear previous error message
                 errorMessage.style.display = 'none';
 
-                // Get input values
                 const usernameOrEmail = emailField.value;
                 const password = passwordField.value;
+                const loginButton = document.querySelector('.btn-login');
+                loginButton.disabled = true;
+                loginButton.textContent = 'Logging in...';
 
                 try {
-                    // Disable the login button while processing
-                    const loginButton = document.querySelector('.btn-login');
-                    loginButton.disabled = true;
-                    loginButton.textContent = 'Logging in...';
-
-                    // Call API
                     const response = await fetch('/api/Auth/login', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            usernameOrEmail: usernameOrEmail,
-                            password: password
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ usernameOrEmail, password })
                     });
 
                     const data = await response.json();
 
-                    if (data.success) {
-                        // Store token and user info in localStorage
+                    if (data.success && data.token && data.user) {
                         localStorage.setItem('token', data.token);
                         localStorage.setItem('user', JSON.stringify(data.user));
 
-                        // Verify if user role matches selected role
-                        const userRole = parseInt(data.user.role.replace('Member', '0').replace('Staff', '1').replace('Admin', '2'));
+                        const role = data.user.role.toLowerCase();
+                        const redirectMap = {
+                            'member': 'user-dashboard.html',
+                            'user': 'user-dashboard.html',
+                            'staff': 'staff-dashboard.html',
+                            'admin': 'admin-dashboard.html'
+                        };
 
-                        if (userRole !== selectedRole) {
-                            // Show error for wrong role selection
-                            errorMessage.textContent = `You tried to log in as ${getSelectedRoleName()} but your account is registered as ${data.user.role}. Please select the correct user type.`;
+                        const selected = getSelectedRoleName().toLowerCase();
+                        if (role !== selected) {
+                            errorMessage.textContent = `You selected '${selected}' but you are registered as '${data.user.role}'. Please choose the correct role.`;
                             errorMessage.style.display = 'block';
                             loginButton.disabled = false;
                             loginButton.textContent = 'Login';
                             return;
                         }
 
-                        // Redirect based on user role
-                        if (userRole === 0) { // Member
-                            window.location.href = 'dashboard.html';
-                        } else if (userRole === 1) { // Staff
-                            window.location.href = 'staff-dashboard.html';
-                        } else if (userRole === 2) { // Admin
-                            window.location.href = '/admin-dashboard.html';
-                        }
+                        window.location.href = redirectMap[role] || 'user-dashboard.html';
                     } else {
-                        // Show error message
                         errorMessage.textContent = data.message || 'Login failed. Please check your credentials.';
                         errorMessage.style.display = 'block';
                         loginButton.disabled = false;
                         loginButton.textContent = 'Login';
                     }
-                } catch (error) {
-                    console.error('Error during login:', error);
-                    errorMessage.textContent = 'An error occurred during login. Please try again.';
+                } catch (err) {
+                    console.error('Login error:', err);
+                    errorMessage.textContent = 'An error occurred. Please try again.';
                     errorMessage.style.display = 'block';
-
-                    // Re-enable login button
-                    const loginButton = document.querySelector('.btn-login');
                     loginButton.disabled = false;
                     loginButton.textContent = 'Login';
                 }
             });
 
-            // Helper function to get the name of the selected role
             function getSelectedRoleName() {
-                switch(selectedRole) {
+                switch (selectedRole) {
                     case 0: return 'Member';
                     case 1: return 'Staff';
                     case 2: return 'Admin';

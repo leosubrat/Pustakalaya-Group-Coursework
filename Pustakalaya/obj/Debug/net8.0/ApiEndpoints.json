@@ -379,6 +379,26 @@
   },
   {
     "ContainingType": "Pustakalaya.Controllers.BooksController",
+    "Method": "GetDiscountedBooks",
+    "RelativePath": "api/Books/discounts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Pustakalaya.DTOs.BookDto, Pustakalaya, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Pustakalaya.Controllers.BooksController",
     "Method": "GetPaginatedBooks",
     "RelativePath": "api/Books/paginated",
     "HttpMethod": "GET",

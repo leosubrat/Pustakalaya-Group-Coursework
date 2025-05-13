@@ -1,0 +1,603 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pustakalaya - User Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-left: 240px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .badge-bestseller, .badge-new, .badge-sale, .discount-badge {
+            position: absolute;
+            top: 10px;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .badge-bestseller {
+            background-color: #27ae60;
+            left: 10px;
+        }
+
+        .badge-new {
+            background-color: #3498db;
+            left: 10px;
+            top: 35px;
+        }
+
+        .badge-sale {
+            background-color: #e74c3c;
+            left: 10px;
+            top: 60px;
+        }
+
+        .discount-badge {
+            background-color: #e67e22;
+            right: 10px;
+        }
+
+        #sidebar-container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .rating-stars i {
+            color: #ffc107;
+        }
+
+        .search-bar {
+            max-width: 400px;
+            margin-left: auto;
+            margin-bottom: 20px;
+        }
+
+            .search-bar input {
+                border-radius: 25px;
+                padding: 10px 20px;
+            }
+
+        .filter-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            /* Float to the right */
+            float: right;
+            width: 100%;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .form-check-input:checked {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+
+        .clear-filters {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .clear-filters:hover {
+                text-decoration: underline;
+            }
+
+        .view-details-btn {
+            background-color: #e67e22;
+            border-color: #e67e22;
+            color: white;
+            width: 100%;
+        }
+
+            .view-details-btn:hover {
+                background-color: #d35400;
+                border-color: #d35400;
+                color: white;
+            }
+
+        .released-date {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        .books-container {
+            flex: 1;
+            padding-right: 30px;
+        }
+
+        .filters-container {
+            width: 300px;
+            margin-right: 0;
+            position: relative;
+            right: -50px;
+        }
+
+        /* Tab navigation styles */
+        .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 20px;
+        }
+
+            .nav-tabs .nav-link {
+                border: none;
+                color: #495057;
+                font-weight: 500;
+                padding: 10px 20px;
+                margin-right: 5px;
+                transition: color 0.2s, border-bottom 0.2s;
+            }
+
+                .nav-tabs .nav-link:hover {
+                    color: #e67e22;
+                }
+
+                .nav-tabs .nav-link.active {
+                    color: #e67e22;
+                    border-bottom: 3px solid #e67e22;
+                    background-color: transparent;
+                }
+
+        .tab-content > .tab-pane {
+            display: none;
+        }
+
+        .tab-content > .active {
+            display: block;
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+            .empty-state .icon {
+                font-size: 60px;
+                color: #dee2e6;
+                margin-bottom: 20px;
+            }
+
+            .empty-state h4 {
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+
+            .empty-state p {
+                color: #6c757d;
+                margin-bottom: 25px;
+            }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="section-title">Browse Our Collections</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by title or author..." />
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-books-tab" data-bs-toggle="tab" data-bs-target="#all-books" type="button" role="tab" aria-controls="all-books" aria-selected="true">All Books</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="carts-tab" data-bs-toggle="tab" data-bs-target="#carts" type="button" role="tab" aria-controls="carts" aria-selected="false">Carts</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false">Orders</button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+            <!-- All Books Tab -->
+            <div class="tab-pane fade show active" id="all-books" role="tabpanel" aria-labelledby="all-books-tab">
+                <!-- Modified layout with reversed flex direction -->
+                <div class="content-wrapper">
+                    <!-- Filters container positioned on the right -->
+                    <div class="filters-container">
+                        <div class="filter-section">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="filter-title m-0">Filters</h3>
+                                <a href="#" class="clear-filters" id="clearFilters">Clear All</a>
+                            </div>
+                            <div class="filter-group">
+                                <h4 class="filter-title">Book Type</h4>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input filter-checkbox" type="checkbox" value="bestseller" id="bestsellerCheck">
+                                    <label class="form-check-label" for="bestsellerCheck">Bestsellers</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input filter-checkbox" type="checkbox" value="newRelease" id="newReleaseCheck">
+                                    <label class="form-check-label" for="newReleaseCheck">New Releases</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input filter-checkbox" type="checkbox" value="onSale" id="onSaleCheck">
+                                    <label class="form-check-label" for="onSaleCheck">On Sale</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input filter-checkbox" type="checkbox" value="awardWinner" id="awardWinnerCheck">
+                                    <label class="form-check-label" for="awardWinnerCheck">Award Winners</label>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <h4 class="filter-title">Price Range</h4>
+                                <input type="range" class="form-range" min="50" max="10000" step="50" id="priceRange">
+                                <div class="range-values">
+                                    <span>$50</span>
+                                    <span id="priceRangeValue">$10000</span>
+                                    <span>$10000+</span>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <h4 class="filter-title">Genre</h4>
+                                <div id="genreFilterContainer">
+                                    <div class="text-center py-2">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                            <span class="visually-hidden">Loading genres...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Books container on the left -->
+                    <div class="books-container">
+                        <div class="row" id="bookGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carts Tab -->
+            <div class="tab-pane fade" id="carts" role="tabpanel" aria-labelledby="carts-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <div class="icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h4>Your Cart is Empty</h4>
+                            <p>Add books to your cart to purchase them later.</p>
+                            <button class="btn btn-primary">Browse Books</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <div class="icon">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <h4>No Orders Yet</h4>
+                            <p>Your order history will appear here after you make a purchase.</p>
+                            <button class="btn btn-primary">Start Shopping</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Details Modal -->
+        <div class="modal fade" id="bookDetailModal" tabindex="-1" aria-labelledby="bookDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title" id="bookDetailModalLabel">Book Details</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img id="modalBookImage" src="" alt="Book Cover" class="img-fluid rounded mb-3">
+                                <div id="modalReleaseDate" class="bg-primary text-white py-1 px-2 rounded text-center mt-2 mb-3" style="font-size: 0.9rem;"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <h3 id="modalBookTitle" class="fw-bold mb-1"></h3>
+                                <p class="text-muted mb-2" id="modalBookAuthor"></p>
+                                <div class="mb-2" id="modalBookRating"></div>
+                                <h4 id="modalBookPrice" class="text-primary mb-3"></h4>
+                                <p id="modalBookDescription" class="mb-4"></p>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-warning">Add to Cart</button>
+                                    <button class="btn btn-outline-secondary">Add to Wishlist</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const allBooks = [];
+        const filters = {
+            search: '',
+            bestseller: false,
+            awardWinner: false,
+            comingSoon: false,
+            newRelease: false,
+            onSale: false,
+            genres: [],
+            maxPrice: 10000
+        };
+
+        function applyFilters() {
+            let filtered = allBooks.filter(book => {
+                const price = book.isOnSale ? book.price * (1 - (book.discountPercentage / 100)) : book.price;
+                return (
+                    (!filters.search || book.title.toLowerCase().includes(filters.search) || book.author.toLowerCase().includes(filters.search)) &&
+                    (!filters.bestseller || book.isBestseller) &&
+                    (!filters.awardWinner || book.isAwardWinner) &&
+                    (!filters.comingSoon || book.isComingSoon) &&
+                    (!filters.newRelease || book.isNewRelease) &&
+                    (!filters.onSale || book.isOnSale) &&
+                    (filters.genres.length === 0 || filters.genres.includes(book.genre)) &&
+                    price <= filters.maxPrice
+                );
+            });
+            renderBooks(filtered);
+        }
+
+        function getRatingStars(rating) {
+            const fullStars = Math.floor(rating || 0);
+            const halfStar = (rating % 1) >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+            let starsHtml = '';
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            }
+            if (halfStar) {
+                starsHtml += '<i class="fas fa-star-half-alt"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<i class="far fa-star"></i>';
+            }
+
+            return starsHtml;
+        }
+
+        function renderBooks(books) {
+            const grid = document.getElementById('bookGrid');
+            grid.innerHTML = '';
+            if (!books.length) {
+                grid.innerHTML = '<p class="text-center text-muted">No books found.</p>';
+                return;
+            }
+            books.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'col-md-6 col-lg-4 mb-4';
+                const finalPrice = book.isOnSale ? (book.price * (1 - book.discountPercentage / 100)).toFixed(2) : book.price.toFixed(2);
+                card.innerHTML = `
+                              <div class="card h-100 position-relative">
+                                ${book.isBestseller ? '<span class="badge-bestseller">Bestseller</span>' : ''}
+                                ${book.isNewRelease ? '<span class="badge-new">New Release</span>' : ''}
+                                ${book.isOnSale ? '<span class="badge-sale">On Sale</span>' : ''}
+                                ${book.isOnSale ? `<span class="discount-badge">-${book.discountPercentage}%</span>` : ''}
+                                <img src="${book.imageUrl}" class="card-img-top" alt="${book.title}" />
+                                <div class="card-body d-flex flex-column">
+                                  <h5 class="card-title">${book.title}</h5>
+                                  <p class="text-muted">by ${book.author}</p>
+                                  <div class="rating-stars mb-2">${getRatingStars(book.averageRating)}</div>
+                                  <p class="text-success fw-bold mb-3">$${finalPrice}</p>
+                                  <button class="btn view-details-btn mt-auto" data-book='${JSON.stringify(book)}'>View Details</button>
+                                </div>
+                              </div>`;
+                grid.appendChild(card);
+            });
+
+            // Add event listeners to View Details buttons
+            document.querySelectorAll('.view-details-btn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    try {
+                        const book = JSON.parse(this.getAttribute('data-book'));
+                        document.getElementById('modalBookImage').src = book.imageUrl;
+                        document.getElementById('modalBookTitle').textContent = book.title;
+                        document.getElementById('modalBookAuthor').textContent = `by ${book.author}`;
+                        document.getElementById('modalBookDescription').textContent = book.description || 'Hot off the press! This exciting new release is already generating buzz among readers and critics alike. Be among the first to experience this fresh addition to our collection.';
+
+                        // Format release date if available
+                        const releaseDate = book.releaseDate || book.publicationDate;
+                        if (releaseDate) {
+                            const formattedDate = new Date(releaseDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                            document.getElementById('modalReleaseDate').textContent = `Released: ${formattedDate}`;
+                            document.getElementById('modalReleaseDate').style.display = 'block';
+                        } else {
+                            document.getElementById('modalReleaseDate').style.display = 'none';
+                        }
+
+                        // Format ratings with stars
+                        const rating = book.averageRating || book.rating || 0;
+                        const ratingText = rating ? `(${rating.toFixed(1)}/5)` : '';
+                        document.getElementById('modalBookRating').innerHTML = `
+                                        <div class="d-flex align-items-center">
+                                            <div class="rating-stars me-2">${getRatingStars(rating)}</div>
+                                            <span class="text-muted">${ratingText}</span>
+                                        </div>
+                                    `;
+
+                        // Format price display
+                        if (book.isOnSale) {
+                            document.getElementById('modalBookPrice').innerHTML = `<span class="text-muted text-decoration-line-through me-2">$${book.price.toFixed(2)}</span> <span class="text-primary">$${(book.price * (1 - book.discountPercentage / 100)).toFixed(2)}</span>`;
+                        } else {
+                            document.getElementById('modalBookPrice').innerHTML = `<span class="text-primary">$${book.price.toFixed(2)}</span>`;
+                        }
+
+                        // Show the modal
+                        const modalElement = document.getElementById('bookDetailModal');
+                        const modal = new bootstrap.Modal(modalElement);
+                        modal.show();
+                    } catch (error) {
+                        console.error("Error showing book details:", error);
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load navigation
+            fetch('navigation.html')
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById('sidebar-container').innerHTML = data;
+                })
+                .catch(err => {
+                    console.error('Error loading navigation:', err);
+                });
+
+            // Load books
+            fetch('/api/books')
+                .then(res => res.json())
+                .then(books => {
+                    allBooks.push(...books);
+                    renderBooks(allBooks);
+                    const genres = Array.from(new Set(books.map(b => b.genre).filter(Boolean))).sort();
+                    const genreContainer = document.getElementById('genreFilterContainer');
+                    genreContainer.innerHTML = '';
+                    genres.forEach(genre => {
+                        const id = 'genre-' + genre.toLowerCase().replace(/\s+/g, '-');
+                        genreContainer.innerHTML += `
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input genre-checkbox" type="checkbox" value="${genre}" id="${id}">
+                                            <label class="form-check-label" for="${id}">${genre}</label>
+                                        </div>`;
+                    });
+                    document.querySelectorAll('.genre-checkbox').forEach(cb => {
+                        cb.addEventListener('change', () => {
+                            if (cb.checked) filters.genres.push(cb.value);
+                            else filters.genres = filters.genres.filter(g => g !== cb.value);
+                            applyFilters();
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.error('Error loading books:', err);
+                    document.getElementById('bookGrid').innerHTML = '<div class="col-12"><div class="alert alert-danger">Failed to load books. Please try again later.</div></div>';
+                });
+
+            // Set up event listeners
+            document.getElementById('searchInput').addEventListener('input', e => {
+                filters.search = e.target.value.toLowerCase();
+                applyFilters();
+            });
+
+            document.getElementById('priceRange').addEventListener('input', e => {
+                filters.maxPrice = parseInt(e.target.value);
+                document.getElementById('priceRangeValue').textContent = `$${filters.maxPrice}`;
+                applyFilters();
+            });
+
+            document.querySelectorAll('.filter-checkbox').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    filters[cb.value] = cb.checked;
+                    applyFilters();
+                });
+            });
+
+            document.getElementById('clearFilters').addEventListener('click', e => {
+                e.preventDefault();
+                filters.search = '';
+                filters.bestseller = false;
+                filters.awardWinner = false;
+                filters.comingSoon = false;
+                filters.newRelease = false;
+                filters.onSale = false;
+                filters.genres = [];
+                filters.maxPrice = 10000;
+                document.getElementById('searchInput').value = '';
+                document.getElementById('priceRange').value = 10000;
+                document.getElementById('priceRangeValue').textContent = '$10000';
+                document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
+                applyFilters();
+            });
+
+            // Tab navigation handler for empty states
+            document.querySelectorAll('#myTab button').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('data-bs-target');
+
+                    // If clicking on "Browse Books" or "Start Shopping" buttons in empty states
+                    document.querySelectorAll('.empty-state .btn').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            document.getElementById('all-books-tab').click();
+                        });
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

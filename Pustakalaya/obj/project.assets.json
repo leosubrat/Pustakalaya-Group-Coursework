@@ -2929,23 +2929,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\leosu\\.nuget\\packages\\": {},
+    "C:\\Users\\ACER\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Pustakalaya-Grp-Coursework\\Pustakalaya\\Pustakalaya\\Pustakalaya.csproj",
+      "projectUniqueName": "C:\\Users\\ACER\\Desktop\\AD\\Pustakalaye\\Pustakalaya-Group-Coursework\\Pustakalaya\\Pustakalaya.csproj",
       "projectName": "Pustakalaya",
-      "projectPath": "D:\\Pustakalaya-Grp-Coursework\\Pustakalaya\\Pustakalaya\\Pustakalaya.csproj",
-      "packagesPath": "C:\\Users\\leosu\\.nuget\\packages\\",
-      "outputPath": "D:\\Pustakalaya-Grp-Coursework\\Pustakalaya\\Pustakalaya\\obj\\",
+      "projectPath": "C:\\Users\\ACER\\Desktop\\AD\\Pustakalaye\\Pustakalaya-Group-Coursework\\Pustakalaya\\Pustakalaya.csproj",
+      "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ACER\\Desktop\\AD\\Pustakalaye\\Pustakalaya-Group-Coursework\\Pustakalaya\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\leosu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

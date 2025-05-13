@@ -46,7 +46,7 @@
             left: 0;
             width: 250px;
             height: 100vh;
-            background-color: var(--primary-color);
+            background-color: #1e2a38;
             color: white;
             transition: width 0.3s ease;
             z-index: 1000;
@@ -792,10 +792,10 @@
             </div>
             <div class="col-md-6 col-lg-3">
                 <div class="stats-card stats-danger">
-                    <i class="fas fa-exclamation-triangle stats-icon"></i>
-                    <div class="stats-title">Low Stock</div>
-                    <div class="stats-value" id="lowStockBooks">0</div>
-                    <div class="stats-change negative">
+                    <i class="fas fa-user-tie stats-icon"></i>
+                    <div class="stats-title">Staffs</div>
+                    <div class="stats-value" id="totalStaffs">0</div>
+                    <div class="stats-change positive">
                         <i class="fas fa-arrow-up"></i> Updated today
                     </div>
                 </div>
@@ -1478,11 +1478,10 @@
                     if (response.success) {
                         const stats = response.data;
 
-                        // Update stats cards
                         document.getElementById('totalBooks').textContent = stats.totalBooks || 0;
                         document.getElementById('totalOrders').textContent = stats.totalOrders || 0;
                         document.getElementById('totalMembers').textContent = stats.totalMembers || 0;
-                        document.getElementById('lowStockBooks').textContent = stats.lowStockBooks || 0;
+                        document.getElementById('totalStaffs').textContent = stats.totalStaff || 0;
                     }
                 } catch (error) {
                     console.error('Error loading dashboard stats:', error);
@@ -1522,34 +1521,39 @@
                         statusBadge = '<span class="badge bg-warning text-dark">On Sale</span>';
                     } else if (book.isBestseller) {
                         statusBadge = '<span class="badge bg-success">Bestseller</span>';
-                    } else if (book.isNewRelease || (book.listedDate && new Date(book.listedDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000))) {
-                        statusBadge = '<span class="badge bg-info">New Release</span>';
                     } else if (book.isAwardWinner) {
                         statusBadge = '<span class="badge bg-primary">Award Winner</span>';
+                    } else if (book.isNewRelease) {
+                        statusBadge = '<span class="badge bg-info">New Release</span>';
+                    } else if (book.isComingSoon) {
+                        statusBadge = '<span class="badge bg-secondary">Coming Soon</span>';
                     } else if (book.stockQuantity < 10) {
                         statusBadge = '<span class="badge bg-danger">Low Stock</span>';
                     }
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                                <td><img src="${book.imageUrl}" class="table-image" alt="${book.title}"></td>
-                                <td>${book.title}</td>
-                                <td>${book.author}</td>
-                                <td>${book.genre}</td>
-                                <td>${book.price.toFixed(2)}</td>
-                                <td>${book.stockQuantity}</td>
-                                <td>${statusBadge}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary me-1 edit-book" data-book-id="${book.id}"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-outline-danger delete-book" data-book-id="${book.id}"><i class="fas fa-trash"></i></button>
-                                </td>
-                            `;
-
-                    booksTableBody.appendChild(row);
+                        <td><img src="${book.imageUrl}" class="table-image" alt="${book.title}"></td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.genre}</td>
+                        <td>${book.price.toFixed(2)}</td>
+                        <td>${book.stockQuantity}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1 edit-book" data-book-id="${book.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-book" data-book-id="${book.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                     booksTableBody.appendChild(row);
                 });
 
-                attachBookEventListeners();
-            }
+            attachBookEventListeners();
+            }            
 
             async function fetchBookDetails(bookId) {
                 try {
@@ -1651,8 +1655,8 @@
 
                 discounts.forEach(discount => {
                     const now = new Date();
-                    const startDate = new Date(discount.startDate);
-                    const endDate = new Date(discount.endDate);
+                    const startDate = new Date(discount.discountStartDate);
+                    const endDate = new Date(discount.discountEndDate);
 
                     let status = '';
                     if (now < startDate) {
@@ -1665,21 +1669,23 @@
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                            <td>${discount.book.title}</td>
-                            <td>${discount.discountPercentage}%</td>
-                            <td>${formatDate(discount.startDate)}</td>
-                            <td>${formatDate(discount.endDate)}</td>
-                            <td>${discount.isOnSale ? '<span class="badge bg-warning text-dark">On Sale</span>' : 'No'}</td>
-                            <td>${status}</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger remove-discount" data-book-id="${discount.book.id}"><i class="fas fa-times"></i></button>
-                            </td>
-                        `;
+                        <td>${discount.title}</td>
+                        <td>${discount.discountPercentage}%</td>
+                        <td>${formatDate(discount.discountStartDate)}</td>
+                        <td>${formatDate(discount.discountEndDate)}</td>
+                        <td>${discount.isOnSale ? '<span class="badge bg-warning text-dark">On Sale</span>' : 'No'}</td>
+                        <td>${status}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger remove-discount" data-book-id="${discount.id}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </td>
+                    `;
 
                     discountsTableBody.appendChild(row);
                 });
 
-                // Attach event listeners to discount removal buttons
+                // Attach remove-discount button listeners
                 document.querySelectorAll('.remove-discount').forEach(button => {
                     button.addEventListener('click', function () {
                         const bookId = this.getAttribute('data-book-id');

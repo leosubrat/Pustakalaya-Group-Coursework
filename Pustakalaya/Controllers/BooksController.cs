@@ -136,5 +136,14 @@ namespace Pustakalaya.Controllers
                 PageSize = pageSize
             });
         }
+
+        [HttpGet("discounts")]
+        public async Task<ActionResult<IEnumerable<BookDto>>> GetDiscountedBooks()
+        {
+            var discounts = await _bookService.GetDiscountedBooksAsync();
+            return Ok(discounts);
+        }
+
+
     }
 }

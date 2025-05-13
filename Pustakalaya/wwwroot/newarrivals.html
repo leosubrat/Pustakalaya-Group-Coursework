@@ -1,0 +1,811 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pustakalaya - New Releases</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e67e22;
+            --light-color: #ecf0f1;
+            --dark-color: #1a252f;
+            --accent-color: #f39c12;
+            --danger-color: #e74c3c;
+            --success-color: #27ae60;
+            --info-color: #3498db;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-left: 240px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+            .section-title::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 50px;
+                height: 3px;
+                background-color: var(--secondary-color);
+            }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem;
+            height: 100%;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            }
+
+        .card-img-top {
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .badge-bestseller, .badge-new, .badge-sale, .discount-badge {
+            position: absolute;
+            top: 10px;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            border-radius: 5px;
+            color: white;
+            z-index: 1;
+        }
+
+        .badge-bestseller {
+            background-color: #27ae60;
+            left: 10px;
+        }
+
+        .badge-new {
+            background-color: #3498db;
+            left: 10px;
+        }
+
+        .badge-sale {
+            background-color: #e74c3c;
+            left: 10px;
+            top: 40px;
+        }
+
+        .discount-badge {
+            background-color: #e67e22;
+            right: 10px;
+        }
+
+        #sidebar-container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .rating-stars i {
+            color: #ffc107;
+        }
+
+        .search-bar {
+            max-width: 400px;
+            margin-left: auto;
+            margin-bottom: 20px;
+        }
+
+            .search-bar input {
+                border-radius: 25px;
+                padding: 10px 20px;
+            }
+
+        .view-details-btn {
+            background-color: #e67e22;
+            border-color: #e67e22;
+            color: white;
+            width: 100%;
+        }
+
+            .view-details-btn:hover {
+                background-color: #d35400;
+                border-color: #d35400;
+                color: white;
+            }
+
+        .released-date {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .book-author {
+            color: #6c757d;
+            font-style: italic;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .book-price {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .book-rating {
+            margin-bottom: 0.75rem;
+        }
+
+        /* Sort and filter controls */
+        .filter-controls {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            margin: 30px 0;
+        }
+
+            .empty-state .icon {
+                font-size: 60px;
+                color: #dee2e6;
+                margin-bottom: 20px;
+            }
+
+            .empty-state h4 {
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+
+            .empty-state p {
+                color: #6c757d;
+                margin-bottom: 25px;
+            }
+
+        /* Loader */
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            padding: 50px 0;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Release date badge */
+        .release-date-badge {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            background-color: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .pagination .page-link {
+            color: var(--primary-color);
+        }
+
+        /* Error message */
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">New Releases</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search new releases..." />
+            </div>
+        </div>
+
+        <!-- Sort and filter controls -->
+        <div class="filter-controls">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="d-flex align-items-center">
+                        <span class="filter-label">Sort by:</span>
+                        <select class="form-select w-auto" id="sortSelect">
+                            <option value="release_date_desc">Release Date (Newest First)</option>
+                            <option value="release_date_asc">Release Date (Oldest First)</option>
+                            <option value="price_asc">Price (Low to High)</option>
+                            <option value="price_desc">Price (High to Low)</option>
+                            <option value="rating_desc">Rating (Highest First)</option>
+                            <option value="title_asc">Title (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <span class="filter-label">Genre:</span>
+                        <select class="form-select w-auto" id="genreSelect">
+                            <option value="all">All Genres</option>
+                            <!-- Genres will be populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error message container (initially hidden) -->
+        <div id="errorContainer" class="error-message" style="display: none;"></div>
+
+        <!-- Loading indicator -->
+        <div id="loaderContainer" class="loader-container">
+            <div class="loader"></div>
+        </div>
+
+        <!-- New Releases Grid -->
+        <div id="newReleasesGrid" class="row" style="display: none;">
+            <!-- Books will be dynamically populated here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h4>No New Releases Found</h4>
+            <p>We couldn't find any new releases matching your criteria. Try adjusting your filters or check back later.</p>
+            <button class="btn btn-primary" id="clearFiltersBtn">Clear Filters</button>
+        </div>
+
+        <!-- Pagination -->
+        <div id="paginationContainer" class="pagination-container" style="display: none;">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination">
+                    <!-- Pagination will be generated dynamically -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Book Details Modal -->
+    <div class="modal fade" id="bookDetailModal" tabindex="-1" aria-labelledby="bookDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="bookDetailModalLabel">Book Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img id="modalBookImage" src="" alt="Book Cover" class="img-fluid rounded mb-3">
+                            <div id="modalReleaseDate" class="bg-primary text-white py-1 px-2 rounded text-center mt-2 mb-3" style="font-size: 0.9rem;"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <h3 id="modalBookTitle" class="fw-bold mb-1"></h3>
+                            <p class="text-muted mb-2" id="modalBookAuthor"></p>
+                            <div class="mb-2" id="modalBookRating"></div>
+                            <h4 id="modalBookPrice" class="text-primary mb-3"></h4>
+                            <p id="modalBookDescription" class="mb-4"></p>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-warning" id="addToCartBtn">Add to Cart</button>
+                                <button class="btn btn-outline-secondary" id="addToWishlistBtn">Add to Wishlist</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let allBooks = [];
+        let allGenres = [];
+        let currentFilters = {
+            search: '',
+            genre: 'all',
+            sort: 'release_date_desc'
+        };
+        let pagination = {
+            currentPage: 1,
+            itemsPerPage: 12,
+            totalPages: 1
+        };
+
+        // Formatting and utility functions
+        function formatDate(dateString) {
+            if (!dateString) return 'Unknown';
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function getRatingStars(rating) {
+            const fullStars = Math.floor(rating || 0);
+            const halfStar = (rating % 1) >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+            let starsHtml = '';
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            }
+            if (halfStar) {
+                starsHtml += '<i class="fas fa-star-half-alt"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<i class="far fa-star"></i>';
+            }
+
+            return starsHtml;
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.textContent = message;
+            errorContainer.style.display = 'block';
+
+            document.getElementById('loaderContainer').style.display = 'none';
+            document.getElementById('newReleasesGrid').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('paginationContainer').style.display = 'none';
+        }
+
+        function hideError() {
+            document.getElementById('errorContainer').style.display = 'none';
+        }
+
+        // API functions
+        async function fetchNewReleases() {
+            try {
+                hideError();
+                document.getElementById('loaderContainer').style.display = 'flex';
+                document.getElementById('newReleasesGrid').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('paginationContainer').style.display = 'none';
+
+                // Prepare API request parameters
+                const params = new URLSearchParams({
+                    isNewRelease: true,
+                    page: pagination.currentPage,
+                    limit: pagination.itemsPerPage,
+                    sortBy: currentFilters.sort
+                });
+
+                if (currentFilters.search) {
+                    params.append('search', currentFilters.search);
+                }
+
+                if (currentFilters.genre !== 'all') {
+                    params.append('genre', currentFilters.genre);
+                }
+
+                // Make API request
+                const response = await fetch(`/api/books?${params.toString()}`);
+
+                if (!response.ok) {
+                    throw new Error(`Error fetching books: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Update global data
+                allBooks = data.books || [];
+                pagination.totalPages = data.totalPages || 1;
+
+                // Render the UI
+                renderBooks(allBooks);
+                renderPagination();
+
+            } catch (error) {
+                console.error('Error fetching new releases:', error);
+                showError(`Failed to load new releases: ${error.message}. Please try again later.`);
+            }
+        }
+
+        async function fetchGenres() {
+            try {
+                const response = await fetch('/api/genres');
+
+                if (!response.ok) {
+                    throw new Error(`Error fetching genres: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                allGenres = data.genres || [];
+
+                // Populate genre select
+                const genreSelect = document.getElementById('genreSelect');
+                genreSelect.innerHTML = '<option value="all">All Genres</option>';
+
+                allGenres.forEach(genre => {
+                    const option = document.createElement('option');
+                    option.value = genre.id || genre.name.toLowerCase();
+                    option.textContent = genre.name;
+                    genreSelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error fetching genres:', error);
+                // We don't show an error for genres failure, just keep the "All Genres" option
+            }
+        }
+
+        async function addToCart(bookId) {
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bookId })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error adding to cart: ${response.statusText}`);
+                }
+
+                // Show success message or update cart count
+                alert('Book added to cart successfully!');
+
+            } catch (error) {
+                console.error('Error adding book to cart:', error);
+                alert(`Failed to add book to cart: ${error.message}`);
+            }
+        }
+
+        async function addToWishlist(bookId) {
+            try {
+                const response = await fetch('/api/wishlist/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bookId })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error adding to wishlist: ${response.statusText}`);
+                }
+
+                // Show success message
+                alert('Book added to wishlist successfully!');
+
+            } catch (error) {
+                console.error('Error adding book to wishlist:', error);
+                alert(`Failed to add book to wishlist: ${error.message}`);
+            }
+        }
+
+        // UI rendering functions
+        function renderBooks(books) {
+            const grid = document.getElementById('newReleasesGrid');
+            const emptyState = document.getElementById('emptyState');
+            const loader = document.getElementById('loaderContainer');
+
+            loader.style.display = 'none';
+
+            if (books.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                document.getElementById('paginationContainer').style.display = 'none';
+                return;
+            }
+
+            grid.style.display = 'flex';
+            emptyState.style.display = 'none';
+            document.getElementById('paginationContainer').style.display = 'flex';
+
+            grid.innerHTML = '';
+            books.forEach(book => {
+                const finalPrice = book.isOnSale
+                    ? (book.price * (1 - book.discountPercentage / 100)).toFixed(2)
+                    : book.price.toFixed(2);
+
+                const releaseDateFormatted = formatDate(book.releaseDate || book.publicationDate);
+
+                const card = document.createElement('div');
+                card.className = 'col-md-6 col-lg-3 mb-4';
+
+                card.innerHTML = `
+                        <div class="card h-100 position-relative">
+                            <span class="badge-new">New Release</span>
+                            ${book.isBestseller ? '<span class="badge-bestseller">Bestseller</span>' : ''}
+                            ${book.isOnSale ? '<span class="badge-sale">On Sale</span>' : ''}
+                            ${book.isOnSale ? `<span class="discount-badge">-${book.discountPercentage}%</span>` : ''}
+                            <span class="release-date-badge">Released: ${releaseDateFormatted}</span>
+                            <img src="${book.imageUrl}" class="card-img-top" alt="${book.title}" onerror="this.src='images/book-placeholder.jpg'"/>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">${book.title}</h5>
+                                <p class="book-author">by ${book.author}</p>
+                                <div class="book-rating">
+                                    ${getRatingStars(book.averageRating || book.rating || 0)}
+                                    <span class="text-muted small">(${(book.averageRating || book.rating || 0).toFixed(1)}/5)</span>
+                                </div>
+                                <p class="book-price">
+                                    ${book.isOnSale ? `<span class="text-decoration-line-through text-muted me-2">$${book.price.toFixed(2)}</span>` : ''}
+                                    <span class="text-primary">$${finalPrice}</span>
+                                </p>
+                                <button class="btn view-details-btn mt-auto" data-book-id="${book.id}">View Details</button>
+                            </div>
+                        </div>
+                    `;
+
+                grid.appendChild(card);
+            });
+
+            // Add event listeners to View Details buttons
+            document.querySelectorAll('.view-details-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    const bookId = this.getAttribute('data-book-id');
+                    openBookDetails(bookId);
+                });
+            });
+        }
+
+        async function openBookDetails(bookId) {
+            try {
+                // First look in our already loaded books
+                let book = allBooks.find(b => b.id.toString() === bookId.toString());
+
+                // If not found, fetch the book details from API
+                if (!book) {
+                    const response = await fetch(`/api/books/${bookId}`);
+                    if (!response.ok) {
+                        throw new Error(`Error fetching book details: ${response.statusText}`);
+                    }
+                    book = await response.json();
+                }
+
+                if (book) {
+                    document.getElementById('modalBookImage').src = book.imageUrl;
+                    document.getElementById('modalBookImage').onerror = function () {
+                        this.src = 'images/book-placeholder.jpg';
+                    };
+                    document.getElementById('modalBookTitle').textContent = book.title;
+                    document.getElementById('modalBookAuthor').textContent = `by ${book.author}`;
+                    document.getElementById('modalBookDescription').textContent = book.description || 'No description available.';
+
+                    // Format release date
+                    const formattedDate = formatDate(book.releaseDate || book.publicationDate);
+                    document.getElementById('modalReleaseDate').textContent = `Released: ${formattedDate}`;
+                    document.getElementById('modalReleaseDate').style.display = 'block';
+
+                    // Format ratings with stars
+                    const rating = book.averageRating || book.rating || 0;
+                    const ratingText = rating ? `(${rating.toFixed(1)}/5)` : '';
+                    document.getElementById('modalBookRating').innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <div class="rating-stars me-2">${getRatingStars(rating)}</div>
+                                <span class="text-muted">${ratingText}</span>
+                            </div>
+                        `;
+
+                    // Format price display
+                    if (book.isOnSale) {
+                        document.getElementById('modalBookPrice').innerHTML =
+                            `<span class="text-muted text-decoration-line-through me-2">$${book.price.toFixed(2)}</span>
+                                 <span class="text-primary">$${(book.price * (1 - book.discountPercentage / 100)).toFixed(2)}</span>`;
+                    } else {
+                        document.getElementById('modalBookPrice').innerHTML =
+                            `<span class="text-primary">$${book.price.toFixed(2)}</span>`;
+                    }
+
+                    // Set up action buttons
+                    document.getElementById('addToCartBtn').onclick = () => addToCart(book.id);
+                    document.getElementById('addToWishlistBtn').onclick = () => addToWishlist(book.id);
+
+                    // Show the modal
+                    const modalElement = document.getElementById('bookDetailModal');
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                }
+            } catch (error) {
+                console.error('Error opening book details:', error);
+                alert(`Failed to load book details: ${error.message}`);
+            }
+        }
+
+        function renderPagination() {
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item${pagination.currentPage === 1 ? ' disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>`;
+            paginationElement.appendChild(prevLi);
+
+            // Page numbers
+            const startPage = Math.max(1, pagination.currentPage - 2);
+            const endPage = Math.min(pagination.totalPages, pagination.currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageLi = document.createElement('li');
+                pageLi.className = `page-item${pagination.currentPage === i ? ' active' : ''}`;
+                pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                paginationElement.appendChild(pageLi);
+
+                // Add click event
+                pageLi.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (pagination.currentPage !== i) {
+                        pagination.currentPage = i;
+                        fetchNewReleases();
+                    }
+                });
+            }
+
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item${pagination.currentPage === pagination.totalPages ? ' disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>`;
+            paginationElement.appendChild(nextLi);
+
+            // Add click events to previous and next buttons
+            prevLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (pagination.currentPage > 1) {
+                    pagination.currentPage--;
+                    fetchNewReleases();
+                }
+            });
+
+            nextLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (pagination.currentPage < pagination.totalPages) {
+                    pagination.currentPage++;
+                    fetchNewReleases();
+                }
+            });
+        }
+
+        // Event handlers
+        function handleSearchInput() {
+            currentFilters.search = document.getElementById('searchInput').value.trim();
+            pagination.currentPage = 1; // Reset to first page on new search
+            fetchNewReleases();
+        }
+
+        function handleSortChange() {
+            currentFilters.sort = document.getElementById('sortSelect').value;
+            fetchNewReleases();
+        }
+
+        function handleGenreChange() {
+            currentFilters.genre = document.getElementById('genreSelect').value;
+            pagination.currentPage = 1; // Reset to first page when changing genre
+            fetchNewReleases();
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('sortSelect').value = 'release_date_desc';
+            document.getElementById('genreSelect').value = 'all';
+
+            currentFilters = {
+                search: '',
+                genre: 'all',
+                sort: 'release_date_desc'
+            };
+
+            pagination.currentPage = 1;
+            fetchNewReleases();
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load navigation
+            fetch('navigation.html')
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById('sidebar-container').innerHTML = data;
+                })
+                .catch(err => {
+                    console.error('Error loading navigation:', err);
+                });
+
+            // Set up event listeners
+            const searchInput = document.getElementById('searchInput');
+            const searchDebounceTimeout = 500; // ms
+            let searchTimeout;
+
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(handleSearchInput, searchDebounceTimeout);
+            });
+
+            document.getElementById('sortSelect').addEventListener('change', handleSortChange);
+            document.getElementById('genreSelect').addEventListener('change', handleGenreChange);
+            document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+
+            // Fetch initial data
+            fetchGenres();
+            fetchNewReleases();
+        });
+
+        // Handle network errors and show fallback UIs
+        window.addEventListener('offline', () => {
+            showError('You are currently offline. Please check your internet connection and try again.');
+        });
+
+        window.addEventListener('online', () => {
+            hideError();
+            fetchNewReleases(); // Refresh data when we're back online
+        });
+    </script>
+</body>
+</html>
